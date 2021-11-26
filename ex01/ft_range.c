@@ -6,7 +6,7 @@
 /*   By: bguyot <bguyot@student.42mulhouse.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/18 18:24:17 by bguyot            #+#    #+#             */
-/*   Updated: 2021/11/24 13:26:37 by bguyot           ###   ########.fr       */
+/*   Updated: 2021/11/24 17:29:07 by bguyot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	*ft_range(int min, int max)
 
 	if (min >= max)
 		return (NULL);
-	tab = (int *) malloc(max - min);
+	tab = (int *) malloc(sizeof(*tab) * (max - min));
 	if (!tab)
 		return (NULL);
 	i = 0;

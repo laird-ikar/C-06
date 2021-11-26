@@ -6,22 +6,22 @@
 /*   By: bguyot <bguyot@student.42mulhouse.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 09:12:50 by bguyot            #+#    #+#             */
-/*   Updated: 2021/11/24 14:59:26 by bguyot           ###   ########.fr       */
+/*   Updated: 2021/11/26 08:16:00 by bguyot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
 
-char	*ft_convert_base(char *nbr, char *base_from, char *base_to);
-char	*ft_itoa_base(int nbr, char *base);
-int		ft_atoi_base(char *str, char *base);
-int		is_valid(char *base);
 void	add_char(int *value, char c, char *base);
-int		is_in_base(char c, char *base);
 void	sign_gestion(char *str, int *i, int *sign);
-int		ft_strlen(char *str);
-char	*ft_strbcat(char *beg, char *end, int size_beg, int size_end);
+char	*ft_convert_base(char *nbr, char *base_from, char *base_to);
+char	*ft_itoa_base(int nb, char *base);
+int		ft_digits(int nb, int base);
+int		ft_abs(int n);
+int		ft_atoi_base(char *str, char *base);
+int		is_in_base(char c, char *base);
+int		is_valid(char *base);
 
 char	*ft_convert_base(char *nbr, char *base_from, char *base_to)
 {
@@ -38,31 +38,6 @@ char	*ft_convert_base(char *nbr, char *base_from, char *base_to)
 		str = ft_itoa_base(value, base_to);
 		return (str);
 	}
-}
-
-char	*ft_itoa_base(int nbr, char *base)
-{
-	char	*res;
-	int		base_size;
-
-	res = "";
-	base_size = is_valid(base);
-	if (nbr < 0)
-	{
-		res = ft_strbcat("-", ft_itoa_base(nbr / -base_size, base),
-				1, ft_strlen(ft_itoa_base(nbr / -base_size, base)));
-		res = ft_strbcat(res, &base[-(nbr % base_size)], ft_strlen(res), 1);
-	}
-	else
-	{
-		while (nbr >= base_size)
-		{
-			res = ft_strbcat(&base[nbr % base_size], res, 1, ft_strlen(res));
-			nbr /= base_size;
-		}
-		res = ft_strbcat(&base[nbr % base_size], res, 1, ft_strlen(res));
-	}
-	return (res);
 }
 
 int	ft_atoi_base(char *str, char *base)
@@ -104,31 +79,27 @@ void	add_char(int *value, char c, char *base)
 	*value += i;
 }
 
-char	*ft_strbcat(char *beg, char *end, int size_beg, int size_end)
+void	sign_gestion(char *str, int *i, int *sign)
 {
-	char	*res;
-	int		i;
-	int		j;
+	while (str[*i] == '+'
+		|| str[*i] == '-')
+	{
+		if (str[*i] == '-')
+			*sign *= -1;
+		(*i)++;
+	}
+}
 
-	j = size_beg + size_end + 1;
-	res = (char *) malloc(j);
-	if (!res)
-		return (NULL);
+int	is_in_base(char c, char *base)
+{
+	int	i;
+
 	i = 0;
-	j = 0;
-	while (beg[i] && i < size_beg)
+	while (base[i])
 	{
-		res[j] = beg[i];
-		j++;
+		if (base[i] == c)
+			return (1);
 		i++;
 	}
-	i = 0;
-	while (end[i] && i < size_end)
-	{
-		res[j] = end[i];
-		j++;
-		i++;
-	}
-	res[j] = '\0';
-	return (res);
+	return (0);
 }

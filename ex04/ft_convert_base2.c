@@ -6,23 +6,79 @@
 /*   By: bguyot <bguyot@student.42mulhouse.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 13:20:37 by bguyot            #+#    #+#             */
-/*   Updated: 2021/11/24 14:58:38 by bguyot           ###   ########.fr       */
+/*   Updated: 2021/11/26 08:44:19 by bguyot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
 
-char	*ft_convert_base(char *nbr, char *base_from, char *base_to);
-void	ft_putnbr_base(int nbr, char *base);
-char	*ft_itoa_base(int nbr, char *base);
-int		ft_atoi_base(char *str, char *base);
-int		is_valid(char *base);
 void	add_char(int *value, char c, char *base);
-int		is_in_base(char c, char *base);
 void	sign_gestion(char *str, int *i, int *sign);
-int		ft_strlen(char *str);
-char	*ft_strbcat(char *beg, char *end, int size_beg, int size_end);
+char	*ft_convert_base(char *nbr, char *base_from, char *base_to);
+char	*ft_itoa_base(int nb, char *base);
+int		ft_digits(int nb, int base);
+int		ft_abs(int n);
+int		ft_atoi_base(char *str, char *base);
+int		is_in_base(char c, char *base);
+int		is_valid(char *base);
+
+char	*ft_itoa_base(int nb, char *base)
+{
+	int		base_size;
+	int		i;
+	int		sign;
+	int		res_size;
+	char	*res;
+
+	base_size = is_valid(base);
+	res_size = ft_digits(nb, base_size);
+	sign = (nb < 0);
+	res = malloc(sizeof(*res) * (res_size + 1 + sign));
+	i = res_size - 1 + sign;
+	while (i >= sign)
+	{
+		res[i] = base[ft_abs(nb % base_size)];
+		nb /= base_size;
+		i--;
+	}
+	if (sign)
+		res[0] = '-';
+	res[res_size + sign] = '\0';
+	return (res);
+}
+
+int	ft_digits(int nb, int base)
+{
+	int	i;
+
+	i = 1;
+	if (nb > 0)
+	{
+		while (nb >= base)
+		{
+			nb /= base;
+			i++;
+		}
+	}
+	else
+	{
+		while (nb <= -base)
+		{
+			nb /= base;
+			i++;
+		}
+	}
+	return (i);
+}
+
+int	ft_abs(int n)
+{
+	if (n >= 0)
+		return (n);
+	else
+		return (-n);
+}
 
 int	is_valid(char *base)
 {
@@ -50,39 +106,4 @@ int	is_valid(char *base)
 		return (size);
 	else
 		return (0);
-}
-
-int	is_in_base(char c, char *base)
-{
-	int	i;
-
-	i = 0;
-	while (base[i])
-	{
-		if (base[i] == c)
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-void	sign_gestion(char *str, int *i, int *sign)
-{
-	while (str[*i] == '+'
-		|| str[*i] == '-')
-	{
-		if (str[*i] == '-')
-			*sign *= -1;
-		(*i)++;
-	}
-}
-
-int	ft_strlen(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
 }
