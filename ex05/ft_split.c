@@ -6,7 +6,7 @@
 /*   By: bguyot <bguyot@student.42mulhouse.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 10:23:10 by bguyot            #+#    #+#             */
-/*   Updated: 2021/11/26 09:38:17 by bguyot           ###   ########.fr       */
+/*   Updated: 2021/11/27 11:49:36 by bguyot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,9 @@ char	**ft_split(char *str, char *charset)
 	while (i < nb_splits)
 	{
 		split = get_split(str, charset, i);
-		splits[i] = malloc(sizeof(**splits) * split.size);
+		splits[i] = malloc(sizeof(*splits[i]) * (split.size + 1));
 		splits[i] = ft_strncpy(splits[i], split.beg, split.size);
+		splits[i][split.size] = 0;
 		i++;
 	}
 	splits[nb_splits] = 0;

@@ -6,7 +6,7 @@
 /*   By: bguyot <bguyot@student.42mulhouse.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 08:54:27 by bguyot            #+#    #+#             */
-/*   Updated: 2021/11/26 08:42:58 by bguyot           ###   ########.fr       */
+/*   Updated: 2021/11/27 15:11:59 by bguyot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,53 +14,43 @@
 #include <unistd.h>
 
 char	*ft_strjoin(int size, char **strs, char *sep);
-char	*ft_strcat(char *dest, char *src);
+void	ft_str_concat(char *tab, int size, char **strs, char *sep);
+int		ft_str_compt(int size, char **strs, char *sep);
 int		ft_strlen(char *str);
-int		ft_strslen(char **strs, int size);
 
 char	*ft_strjoin(int size, char **strs, char *sep)
 {
-	int		i;
+	int		size_all;
 	char	*tab;
 
-	if (!size)
-	{
-		tab = (char *) malloc(0);
-		return (tab);
-	}
-	tab = malloc(sizeof(*tab)
-			* (ft_strlen(sep) * (size - 1)
-				+ ft_strslen(strs, size) + 1));
-	if (!tab)
-		return (NULL);
-	tab = ft_strcat(tab, strs[0]);
-	i = 1;
-	while (i < size)
-	{
-		tab = ft_strcat(tab, sep);
-		tab = ft_strcat(tab, strs[i]);
-		i++;
-	}
-	tab[i] = 0;
-	return (tab);
+	size_all = ft_strslen(size, strs, sep);
+	tab = malloc(sizeof(char) * size_all);
+	big_concat(tab, size, strs, sep);
 }
 
-char	*ft_strcat(char *dest, char *src)
+void	big_concat(char *tab, int size, char **strs, char *sep)
 {
-	int	size;
 	int	i;
+	int	j;
+	int	l;
 
-	size = 0;
-	while (dest[size])
-		size++;
 	i = 0;
-	while (src[i])
+	j = 0;
+	l = 0;
+	while (i < size)
 	{
-		dest[size + i] = src[i];
+		j = 0;
+		while (strs[i][j])
+			tab[l++] = strs[i][j++];
+		if (i != size - 1)
+		{
+			j = 0;
+			while (sep[k])
+				tab[l++] = sep[j++];
+		}
 		i++;
 	}
-	dest[i + size] = '\0';
-	return (dest);
+	tab[l] = 0;
 }
 
 int	ft_strlen(char *str)
@@ -69,20 +59,29 @@ int	ft_strlen(char *str)
 
 	i = 0;
 	while (str[i] != '\0')
-	{
 		i++;
-	}
 	return (i);
 }
 
-int	ft_strslen(char **strs, int size)
+int	ft_strslen(int size, char **strs, char *sep)
 {
 	int	i;
-	int	res;
+	int	j;
+	int	len;
 
-	i = -1;
-	res = 0;
-	while (++i < size)
-		res += ft_strlen(strs[i]);
-	return (res);
+	i = 0;
+	len = 0;
+	while (i < size)
+	{
+		j = 0;
+		while (strs[i][j])
+			j++;
+		i++;
+		len += j;
+		j = 0;
+		while (i < size && sep[j])
+			j++;
+		len += j;
+	}
+	return (len);
 }
