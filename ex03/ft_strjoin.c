@@ -6,7 +6,7 @@
 /*   By: bguyot <bguyot@student.42mulhouse.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 08:54:27 by bguyot            #+#    #+#             */
-/*   Updated: 2021/11/27 15:11:59 by bguyot           ###   ########.fr       */
+/*   Updated: 2021/11/28 09:40:51 by bguyot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 #include <unistd.h>
 
 char	*ft_strjoin(int size, char **strs, char *sep);
-void	ft_str_concat(char *tab, int size, char **strs, char *sep);
-int		ft_str_compt(int size, char **strs, char *sep);
+void	big_concat(char *tab, int size, char **strs, char *sep);
+int		ft_strslen(int size, char **strs, char *sep);
 int		ft_strlen(char *str);
 
 char	*ft_strjoin(int size, char **strs, char *sep)
@@ -26,6 +26,7 @@ char	*ft_strjoin(int size, char **strs, char *sep)
 	size_all = ft_strslen(size, strs, sep);
 	tab = malloc(sizeof(char) * size_all);
 	big_concat(tab, size, strs, sep);
+	return (tab);
 }
 
 void	big_concat(char *tab, int size, char **strs, char *sep)
@@ -45,7 +46,7 @@ void	big_concat(char *tab, int size, char **strs, char *sep)
 		if (i != size - 1)
 		{
 			j = 0;
-			while (sep[k])
+			while (sep[j])
 				tab[l++] = sep[j++];
 		}
 		i++;

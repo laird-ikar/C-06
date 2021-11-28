@@ -5,121 +5,89 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: bguyot <bguyot@student.42mulhouse.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/22 10:23:10 by bguyot            #+#    #+#             */
-/*   Updated: 2021/11/27 11:49:36 by bguyot           ###   ########.fr       */
+/*   Created: 2021/11/28 09:36:58 by bguyot            #+#    #+#             */
+/*   Updated: 2021/11/28 09:46:14 by bguyot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include <unistd.h>
 
-typedef struct s_split
-{
-	unsigned int	size;
-	char			*beg;
-}	t_split;
-
-t_split	get_split(char *str, char *charset, int i);
-char	**ft_split(char *str, char *charset);
-char	*ft_strncpy(char *dest, char *src, unsigned int n);
-int		is_in_charset(char c, char *charset);
-int		get_nb_splits(char *str, char *charset);
+int		ft_is_separator(char *str, char *charset);
+int		ft_wordlen(char *str, char *charset);
+int		ft_wordcount(char *str, char *charset);
+char	*ft_wordcpy(char *src, int n);
 
 char	**ft_split(char *str, char *charset)
 {
-	char	**splits;
-	int		nb_splits;
+	char	**res;
+	int		size;
 	int		i;
-	t_split	split;
+	int		n;
 
-	nb_splits = get_nb_splits(str, charset);
-	splits = (char **) malloc(sizeof(*splits) * (nb_splits + 1));
-	i = 0;
-	while (i < nb_splits)
-	{
-		split = get_split(str, charset, i);
-		splits[i] = malloc(sizeof(*splits[i]) * (split.size + 1));
-		splits[i] = ft_strncpy(splits[i], split.beg, split.size);
-		splits[i][split.size] = 0;
-		i++;
-	}
-	splits[nb_splits] = 0;
-	return (splits);
-}
-
-char	*ft_strncpy(char *dest, char *src, unsigned int n)
-{
-	unsigned int	i;
-
-	i = 0;
-	while (i < n && src[i] != '\0')
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	while (i < n)
-	{
-		dest[i] = '\0';
-		i++;
-	}
-	return (dest);
-}
-
-t_split	get_split(char *str, char *charset, int nb)
-{
-	t_split	split;
-	int		i;
-
-	i = 0;
-	while (is_in_charset(str[i], charset))
-		i++;
-	while (nb >= 0)
-	{
-		split.size = 0;
-		split.beg = str + i;
-		while (!is_in_charset(str[i], charset))
-		{
-			split.size++;
-			i++;
-		}
-		while (is_in_charset(str[i], charset))
-			i++;
-		nb--;
-	}
-	return (split);
-}
-
-int	is_in_charset(char c, char *charset)
-{
-	int	i;
-
+	size = ft_wordcount(str, charset);
+	res = malloc((size + 1) * sizeof(char *));
+	if (res == NULL)
+		return (NULL);
 	i = -1;
-	while (charset[++i])
+	while (++i < size)
 	{
-		if (c == charset[i])
-			return (1);
+		while (*str && ft_is_separator(str, charset))
+			str++;
+		n = ft_wordlen(str, charset);
+		res[i] = ft_wordcpy(str, n);
+		if (res[i] == NULL)
+			return (NULL);
+		str += n;
 	}
+	res[size] = 0;
+	return (res);
+}
+
+int	ft_is_separator(char *str, char *charset)
+{
+	while (*charset)
+		if (*str == *charset++)
+			return (1);
 	return (0);
 }
 
-int	get_nb_splits(char *str, char *charset)
+int	ft_wordlen(char *str, char *charset)
 {
-	int		i;
-	int		count;
+	int	i;
 
 	i = 0;
-	count = 0;
-	while (is_in_charset(str[i], charset) && str[i])
+	while (str[i] && !ft_is_separator(str + i, charset))
 		i++;
-	while (str[i])
+	return (i);
+}
+
+int	ft_wordcount(char *str, char *charset)
+{
+	int	i;
+	int	count;
+
+	count = 0;
+	while (*str)
 	{
-		while (!is_in_charset(str[i], charset) && str[i])
-		{
-			i++;
-		}
-		while (is_in_charset(str[i], charset) && str[i])
-			i++;
-		count++;
+		while (*str && ft_is_separator(str, charset))
+			str++;
+		i = ft_wordlen(str, charset);
+		str += i;
+		if (i)
+			count++;
 	}
 	return (count);
+}
+
+char	*ft_wordcpy(char *src, int n)
+{
+	char	*dest;
+
+	dest = malloc((n + 1) * sizeof(char));
+	if (dest == NULL)
+		return (NULL);
+	dest[n] = '\0';
+	while (n--)
+		dest[n] = src[n];
+	return (dest);
 }
